@@ -1,0 +1,1 @@
+Defence white circle from yellow bullet by using shield stick.

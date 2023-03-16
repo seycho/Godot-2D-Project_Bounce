@@ -1,0 +1,41 @@
+[gd_scene load_steps=4 format=3 uid="uid://chuhys5hie7op"]
+
+[ext_resource type="PackedScene" uid="uid://bkamvdhxfxahu" path="res://player/player.tscn" id="1_2qhoe"]
+[ext_resource type="PackedScene" uid="uid://cd51wtirkixto" path="res://enemy/bullet.tscn" id="2_cbe5m"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_mqfnh"]
+friction = 0.0
+bounce = 1.0
+
+[node name="Node2D" type="Node2D"]
+
+[node name="boundary_1" type="StaticBody2D" parent="."]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="boundary_1"]
+polygon = PackedVector2Array(34, 664, 241, 612, 606, 690, 882, 616, 1117, 693, 1216, 530, 1312, 584, 1324, 799, -131, 797, -131, -119, -32, 47, -3, 244, 10, 431, -7, 588)
+
+[node name="Polygon2D" type="Polygon2D" parent="boundary_1"]
+color = Color(0.380392, 0.380392, 0.380392, 1)
+polygon = PackedVector2Array(34, 664, 241, 612, 606, 690, 882, 616, 1117, 693, 1216, 530, 1312, 584, 1324, 799, -131, 797, -131, -119, -32, 47, -3, 244, 10, 431, -7, 588)
+
+[node name="boundary_2" type="StaticBody2D" parent="."]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="boundary_2"]
+polygon = PackedVector2Array(-136, -111, -42, 39, 141, 7, 337, -18, 473, 22, 760, 22, 883, -5, 1041, -47, 1154, -2, 1135, 47, 1189, 136, 1162, 284, 1147, 377, 1144, 479, 1135, 607, 1151, 653, 1277, 562, 1324, 378, 1322, -109)
+
+[node name="Polygon2D" type="Polygon2D" parent="boundary_2"]
+color = Color(0.380392, 0.380392, 0.380392, 1)
+polygon = PackedVector2Array(-136, -111, -42, 39, 141, 7, 337, -18, 473, 22, 760, 22, 883, -5, 1041, -47, 1154, -2, 1135, 47, 1189, 136, 1162, 284, 1147, 377, 1144, 479, 1135, 607, 1151, 653, 1277, 562, 1324, 378, 1322, -109)
+
+[node name="player" parent="." instance=ExtResource("1_2qhoe")]
+position = Vector2(216, 330)
+
+[node name="Camera2D" type="Camera2D" parent="player"]
+zoom = Vector2(0.5, 0.5)
+
+[node name="bullet" parent="." instance=ExtResource("2_cbe5m")]
+position = Vector2(838, 357)
+mass = 10.0
+physics_material_override = SubResource("PhysicsMaterial_mqfnh")
+gravity_scale = 0.0
+linear_velocity = Vector2(-1000, 0)

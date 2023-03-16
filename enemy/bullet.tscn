@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://cd51wtirkixto"]
+
+[ext_resource type="Texture2D" uid="uid://disu6gvuertgd" path="res://enemy/image/ball_yellow.png" id="1_56o1k"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_y7fia"]
+radius = 13.0
+
+[node name="bullet" type="RigidBody2D"]
+
+[node name="BallYellow" type="Sprite2D" parent="."]
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("1_56o1k")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_y7fia")
