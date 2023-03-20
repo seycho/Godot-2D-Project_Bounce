@@ -15,12 +15,15 @@ radius = 8.0
 height = 144.0
 
 [node name="player" type="CharacterBody2D"]
+collision_layer = 0
 script = ExtResource("1_cijms")
 
 [node name="colshape" type="CollisionShape2D" parent="."]
 shape = SubResource("2")
 
 [node name="reghit" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 2
 gravity = 0.0
 linear_damp = 2.0
 
@@ -37,6 +40,7 @@ texture = ExtResource("2_quouc")
 
 [node name="body" type="CharacterBody2D" parent="posshield"]
 position = Vector2(100, 0)
+collision_mask = 0
 
 [node name="colshape" type="CollisionShape2D" parent="posshield/body"]
 shape = SubResource("CapsuleShape2D_o71kk")
@@ -48,6 +52,8 @@ begin_cap_mode = 2
 end_cap_mode = 2
 
 [node name="areahit" type="Area2D" parent="posshield/body"]
+collision_layer = 0
+collision_mask = 2
 
 [node name="colshape" type="CollisionShape2D" parent="posshield/body/areahit"]
 shape = SubResource("CapsuleShape2D_hn4vd")
