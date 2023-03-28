@@ -1,34 +1,39 @@
-[gd_scene load_steps=6 format=3 uid="uid://bkamvdhxfxahu"]
+[gd_scene load_steps=7 format=3 uid="uid://bkamvdhxfxahu"]
 
 [ext_resource type="Script" path="res://player/script/player_main.cs" id="1_cijms"]
 [ext_resource type="Texture2D" uid="uid://bdsjxvs58mtnp" path="res://player/image/player_ball.png" id="2_quouc"]
 
 [sub_resource type="CircleShape2D" id="2"]
+radius = 24.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ax6um"]
 radius = 32.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_o71kk"]
-radius = 8.0
-height = 144.0
+radius = 6.0
+height = 140.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hn4vd"]
 radius = 8.0
 height = 144.0
 
 [node name="player" type="CharacterBody2D"]
-collision_layer = 0
+collision_layer = 2
+collision_mask = 5
 script = ExtResource("1_cijms")
 
 [node name="colshape" type="CollisionShape2D" parent="."]
 shape = SubResource("2")
 
 [node name="reghit" type="Area2D" parent="."]
-collision_layer = 2
+collision_layer = 0
 collision_mask = 2
+priority = 10.0
 gravity = 0.0
 linear_damp = 2.0
 
 [node name="colshape" type="CollisionShape2D" parent="reghit"]
-shape = SubResource("2")
+shape = SubResource("CircleShape2D_ax6um")
 
 [node name="posbody" type="Marker2D" parent="."]
 
@@ -53,7 +58,7 @@ end_cap_mode = 2
 
 [node name="areahit" type="Area2D" parent="posshield/body"]
 collision_layer = 0
-collision_mask = 2
+collision_mask = 8
 
 [node name="colshape" type="CollisionShape2D" parent="posshield/body/areahit"]
 shape = SubResource("CapsuleShape2D_hn4vd")

@@ -1,19 +1,54 @@
-[gd_scene load_steps=3 format=3 uid="uid://cd51wtirkixto"]
+[gd_scene load_steps=8 format=3 uid="uid://cd51wtirkixto"]
 
 [ext_resource type="Texture2D" uid="uid://disu6gvuertgd" path="res://enemy/image/ball_yellow.png" id="1_56o1k"]
+[ext_resource type="Script" path="res://enemy/script/bullet_main.cs" id="1_ppg42"]
+[ext_resource type="Texture2D" uid="uid://668kpyyhcr6v" path="res://enemy/image/ball_cyan.png" id="3_sbrvw"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_o4g5t"]
+friction = 0.0
+bounce = 1.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_y7fia"]
+radius = 12.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2npqf"]
 radius = 13.0
 
-[node name="bullet" type="RigidBody2D" groups=["bullet"]]
-collision_layer = 2
-collision_mask = 3
+[sub_resource type="CircleShape2D" id="CircleShape2D_487vv"]
+radius = 13.0
+
+[node name="bullet" type="RigidBody2D" groups=["bullet", "enemy"]]
+collision_layer = 8
+collision_mask = 15
+physics_material_override = SubResource("PhysicsMaterial_o4g5t")
 gravity_scale = 0.0
 continuous_cd = 1
+linear_damp_mode = 1
+script = ExtResource("1_ppg42")
 
-[node name="BallYellow" type="Sprite2D" parent="."]
+[node name="colshape" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_y7fia")
+
+[node name="ballcyan" type="Sprite2D" parent="."]
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("3_sbrvw")
+
+[node name="ballyellow" type="Sprite2D" parent="."]
 scale = Vector2(0.1, 0.1)
 texture = ExtResource("1_56o1k")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_y7fia")
+[node name="regdet" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 15
+
+[node name="colshape" type="CollisionShape2D" parent="regdet"]
+visible = false
+shape = SubResource("CircleShape2D_2npqf")
+
+[node name="regatk" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 14
+
+[node name="colshape" type="CollisionShape2D" parent="regatk"]
+visible = false
+shape = SubResource("CircleShape2D_487vv")

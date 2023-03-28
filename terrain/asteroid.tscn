@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://bp681e00rbxm6"]
+
+[ext_resource type="Script" path="res://terrain/script/asteroid_main.cs" id="1_c8vb6"]
+
+[node name="asteroid" type="StaticBody2D"]
+collision_mask = 0
+script = ExtResource("1_c8vb6")
+
+[node name="colpoly" type="CollisionPolygon2D" parent="."]
+
+[node name="imgpoly" type="Polygon2D" parent="."]
+color = Color(0.380392, 0.380392, 0.380392, 1)
