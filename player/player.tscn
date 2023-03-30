@@ -1,7 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://bkamvdhxfxahu"]
+[gd_scene load_steps=9 format=3 uid="uid://bkamvdhxfxahu"]
 
 [ext_resource type="Script" path="res://player/script/player_main.cs" id="1_cijms"]
 [ext_resource type="Texture2D" uid="uid://bdsjxvs58mtnp" path="res://player/image/player_ball.png" id="2_quouc"]
+[ext_resource type="AudioStream" uid="uid://ddkm54wujx5i1" path="res://sound/player_hit.mp3" id="3_qkqk7"]
+[ext_resource type="AudioStream" uid="uid://0yhosw44l30g" path="res://sound/shield_hit.mp3" id="4_lfd82"]
 
 [sub_resource type="CircleShape2D" id="2"]
 radius = 24.0
@@ -27,7 +29,7 @@ shape = SubResource("2")
 
 [node name="reghit" type="Area2D" parent="."]
 collision_layer = 0
-collision_mask = 2
+collision_mask = 6
 priority = 10.0
 gravity = 0.0
 linear_damp = 2.0
@@ -62,3 +64,13 @@ collision_mask = 8
 
 [node name="colshape" type="CollisionShape2D" parent="posshield/body/areahit"]
 shape = SubResource("CapsuleShape2D_hn4vd")
+
+[node name="sound" type="Node" parent="."]
+
+[node name="hit" type="AudioStreamPlayer" parent="sound"]
+stream = ExtResource("3_qkqk7")
+volume_db = -2.0
+
+[node name="reflect" type="AudioStreamPlayer" parent="sound"]
+stream = ExtResource("4_lfd82")
+volume_db = -2.0

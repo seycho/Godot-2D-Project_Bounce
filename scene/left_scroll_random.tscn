@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://b2c8gksim7gby"]
+[gd_scene load_steps=8 format=3 uid="uid://b2c8gksim7gby"]
 
 [ext_resource type="Script" path="res://scene/script/left_scroll_random_main.cs" id="1_jw8fd"]
 [ext_resource type="PackedScene" uid="uid://cr4nyv2jyxia2" path="res://enemy/spawbulletrand.tscn" id="2_1gcbw"]
 [ext_resource type="PackedScene" uid="uid://bkamvdhxfxahu" path="res://player/player.tscn" id="2_gqs6k"]
+[ext_resource type="PackedScene" uid="uid://dkib0884nmc61" path="res://enemy/bossnor1.tscn" id="4_t0uhi"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_j6m2o"]
 size = Vector2(1366, 768)
@@ -10,18 +11,18 @@ size = Vector2(1366, 768)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_eubce"]
 size = Vector2(50, 768)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5t8ns"]
+size = Vector2(50, 768)
+
 [node name="terrain" type="Node2D"]
 script = ExtResource("1_jw8fd")
 
 [node name="playground" type="Node2D" parent="."]
 
-[node name="spawbulletrand" parent="playground" instance=ExtResource("2_1gcbw")]
-position = Vector2(400, 0)
-
 [node name="areamain" type="Area2D" parent="playground"]
 collision_layer = 0
 
-[node name="colpoly" type="CollisionShape2D" parent="playground/areamain"]
+[node name="colshape" type="CollisionShape2D" parent="playground/areamain"]
 shape = SubResource("RectangleShape2D_j6m2o")
 debug_color = Color(0, 0.6, 0.701961, 0.419608)
 
@@ -29,11 +30,24 @@ debug_color = Color(0, 0.6, 0.701961, 0.419608)
 collision_layer = 0
 collision_mask = 9
 
-[node name="colpoly" type="CollisionShape2D" parent="playground/areaend"]
+[node name="colshape" type="CollisionShape2D" parent="playground/areaend"]
 position = Vector2(883, 0)
 shape = SubResource("RectangleShape2D_eubce")
 
+[node name="areasta" type="Area2D" parent="playground"]
+collision_layer = 0
+collision_mask = 8
+
+[node name="colshape" type="CollisionShape2D" parent="playground/areasta"]
+position = Vector2(-708, 0)
+shape = SubResource("RectangleShape2D_5t8ns")
+
 [node name="Camera2D" type="Camera2D" parent="playground"]
+
+[node name="boundard" type="StaticBody2D" parent="playground"]
+
+[node name="colpolyedge" type="CollisionPolygon2D" parent="playground/boundard"]
+polygon = PackedVector2Array(884, -384, -709, -384, -709, 384, 884, 384, 934, 434, -759, 434, -759, -434, 934, -434, 934, 433, 884, 383)
 
 [node name="wall" type="StaticBody2D" parent="."]
 
@@ -42,13 +56,19 @@ shape = SubResource("RectangleShape2D_eubce")
 [node name="colpolybot" type="CollisionPolygon2D" parent="wall"]
 
 [node name="imgpolytop" type="Polygon2D" parent="wall"]
-color = Color(0.380392, 0.380392, 0.380392, 1)
+color = Color(0.235294, 0.235294, 0.235294, 1)
 
 [node name="imgpolybot" type="Polygon2D" parent="wall"]
-color = Color(0.380392, 0.380392, 0.380392, 1)
+color = Color(0.235294, 0.235294, 0.235294, 1)
 
 [node name="asteroidpak" type="Node2D" parent="."]
 
 [node name="player" parent="." instance=ExtResource("2_gqs6k")]
+position = Vector2(-400, 0)
 
 [node name="bulletpak" type="Node2D" parent="."]
+
+[node name="bossnor1" parent="." instance=ExtResource("4_t0uhi")]
+position = Vector2(400, 0)
+
+[node name="spawbulletrand" parent="bossnor1" instance=ExtResource("2_1gcbw")]

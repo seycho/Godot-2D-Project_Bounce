@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="project_b"
-run/main_scene="res://scene/test.tscn"
+run/main_scene="res://scene/left_scroll_random.tscn"
 config/features=PackedStringArray("4.0", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -68,3 +68,7 @@ save_log={
 
 2d/default_gravity=0.0
 2d/default_gravity_vector=Vector2(0, 0)
+
+[rendering]
+
+environment/defaults/default_clear_color=Color(0.117647, 0.117647, 0.117647, 1)

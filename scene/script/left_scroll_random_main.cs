@@ -118,6 +118,11 @@ public partial class left_scroll_random_main : Node2D
 			if (_node.IsInGroup("bullet"))
 				_node.QueueFree();
 		}
+		foreach (var _node in GetNode<Area2D>("playground/areasta").GetOverlappingBodies())
+		{
+			if (_node.IsInGroup("bullet"))
+				_node.QueueFree();
+		}
 	}
 
 	public override void _Ready()
@@ -139,5 +144,6 @@ public partial class left_scroll_random_main : Node2D
 		SpawnAstronoid();
 		RemoveAsteroid();
 		RemoveBullet();
+		GetNode<RigidBody2D>("bossnor1").GetNode<bossnor1_main>(".").posMoveCen.X = posCurrentX+300;
 	}
 }

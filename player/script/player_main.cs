@@ -29,6 +29,7 @@ public partial class player_main : CharacterBody2D
 	private Vector2 dirControl = Vector2.Zero;
 	private Vector2 velShield = Vector2.Zero;
 	public float cefFrictMain; // friction coefficient, kilogram per second
+	public float damageTotal = 0;
 
 	private float deltaTime;
 	
@@ -120,6 +121,7 @@ public partial class player_main : CharacterBody2D
 			trigger["player_hit"][0] = 0;
 			condition["player_hit"] = true;
 			duration["player_hit"][0] = duration["player_hit"][1];
+			GetNode<AudioStreamPlayer>("sound/hit").Play();
 			GetNode<Area2D>("reghit").CollisionMask -= 2;
 		}
 
@@ -148,15 +150,24 @@ public partial class player_main : CharacterBody2D
 			{
 				Vector2 _momentum = Vector2.Zero;
 				float _damage = 0;
-				RigidBody2D _bulletBody = _area.GetOwner<RigidBody2D>();
-				if (_bulletBody.IsInGroup("enemy"))
+				RigidBody2D _body = _area.GetOwner<RigidBody2D>();
+				if (_body.IsInGroup("enemy"))
 				{
-					_momentum += (Position - _bulletBody.Position).Normalized() * _bulletBody.Mass * _bulletBody.LinearVelocity.Length();
-					_bulletBody.GetNode<bullet_main>(".").HitPlayer();
-					_damage += 1;
+					if (_body.IsInGroup("bullet"))
+					{
+						_momentum += (Position - _body.Position).Normalized() * _body.Mass * _body.LinearVelocity.Length();
+						_body.GetNode<bullet_main>(".").HitPlayer();
+						_damage += 1;
+					}
+					if (_body.IsInGroup("boss"))
+					{
+						_momentum += (Position - _body.Position).Normalized() * 5000;
+						_damage += 5;
+					}
 				}
 				if (_damage > 0)
 				{
+					damageTotal += _damage;
 					trigger["player_hit"][0] = 10;
 					velMain += 2 * _momentum / masMain;
 				}
@@ -250,6 +261,7 @@ public partial class player_main : CharacterBody2D
 			if (_momentum.Length() != 0.0f)
 			{
 				velMain += 2 * _momentum / masMain;
+				GetNode<AudioStreamPlayer>("sound/reflect").Play();
 			}
 		}
 	}

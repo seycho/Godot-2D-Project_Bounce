@@ -1,0 +1,54 @@
+[gd_scene load_steps=8 format=3 uid="uid://dkib0884nmc61"]
+
+[ext_resource type="Script" path="res://enemy/script/bossnor1_main.cs" id="1_i7wlb"]
+[ext_resource type="Texture2D" uid="uid://celc4wbfn84cv" path="res://enemy/image/ball_yellowbright.png" id="1_n08op"]
+[ext_resource type="Texture2D" uid="uid://668kpyyhcr6v" path="res://enemy/image/ball_cyan.png" id="3_atgin"]
+[ext_resource type="AudioStream" uid="uid://oypuk8n3lrwj" path="res://sound/boss_hit.mp3" id="4_erv82"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ivj04"]
+radius = 100.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_n3qw3"]
+radius = 129.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_l4rwg"]
+radius = 256.0
+
+[node name="bossnor1" type="RigidBody2D" groups=["boss", "enemy"]]
+collision_layer = 4
+collision_mask = 0
+mass = 100.0
+gravity_scale = 0.0
+freeze = true
+script = ExtResource("1_i7wlb")
+
+[node name="colshape" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_ivj04")
+
+[node name="areahit" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 8
+
+[node name="colshape" type="CollisionShape2D" parent="areahit"]
+shape = SubResource("CircleShape2D_n3qw3")
+
+[node name="areaatk" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 0
+
+[node name="colshape" type="CollisionShape2D" parent="areaatk"]
+shape = SubResource("CircleShape2D_l4rwg")
+
+[node name="posimg" type="Marker2D" parent="."]
+
+[node name="BallYellowbright" type="Sprite2D" parent="posimg"]
+texture = ExtResource("1_n08op")
+
+[node name="BallCyan" type="Sprite2D" parent="posimg"]
+modulate = Color(1, 1, 1, 0)
+texture = ExtResource("3_atgin")
+
+[node name="sound" type="Node" parent="."]
+
+[node name="hit" type="AudioStreamPlayer" parent="sound"]
+stream = ExtResource("4_erv82")

@@ -3,6 +3,7 @@ using System;
 
 public partial class bullet_main : RigidBody2D
 {
+	private bool isActive = true;
 	private float velDefault = 1000;
 
 	public void ReflectShield()
@@ -18,6 +19,36 @@ public partial class bullet_main : RigidBody2D
 		QueueFree();
 	}
 
+	public void HitEnemy()
+	{
+		QueueFree();
+	}
+
+	private void StopActive()
+	{
+		isActive = false;
+		GetNode<Timer>("remove").Start();
+	}
+	
+	private void ActionRemove()
+	{
+		if (GetNode<AudioStreamPlayer>("sound/crash").Playing == false)
+			GetNode<AudioStreamPlayer>("sound/crash").Play();
+		Visible = false;
+		LinearVelocity = Vector2.Zero;
+		CollisionLayer = 0;
+		CollisionMask = 0;
+		GetNode<Area2D>("regdet").CollisionLayer = 0;
+		GetNode<Area2D>("regdet").CollisionMask = 0;
+		GetNode<Area2D>("regatk").CollisionLayer = 0;
+		GetNode<Area2D>("regatk").CollisionMask = 0;
+		if (GetNode<Timer>("remove").TimeLeft <= 0)
+		{
+			GetNode<AudioStreamPlayer>("sound/crash").Stop();
+			QueueFree();
+		}
+	}
+
 	private void KeepSpeed()
 	{
 		bool isCollision = false;
@@ -28,6 +59,7 @@ public partial class bullet_main : RigidBody2D
 		}
 		if (isCollision)
 		{
+			GetNode<AudioStreamPlayer>("sound/hit").Play();
 			LinearVelocity = LinearVelocity / LinearVelocity.Length() * velDefault;
 		}
 	}
@@ -37,9 +69,13 @@ public partial class bullet_main : RigidBody2D
 		foreach (var _body in GetNode<Area2D>("regatk").GetOverlappingBodies())
 		{
 			if (IsInGroup("player") & _body.IsInGroup("enemy"))
-				QueueFree();
+			{
+				StopActive();
+			}
 			if (IsInGroup("enemy") & _body.IsInGroup("player"))
-				QueueFree();
+			{
+				StopActive();
+			}
 		}
 	}
 
@@ -49,7 +85,14 @@ public partial class bullet_main : RigidBody2D
 
 	public override void _Process(double delta)
 	{
-		KeepSpeed();
-		ColliBullet();
+		if (isActive)
+		{
+			KeepSpeed();
+			ColliBullet();
+		}
+		else
+		{
+			ActionRemove();
+		}
 	}
 }
