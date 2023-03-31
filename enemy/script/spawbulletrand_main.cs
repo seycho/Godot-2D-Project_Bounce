@@ -26,7 +26,7 @@ public partial class spawbulletrand_main : Node2D
 				countdownDic[key][0] = 0.0f;
 		}
 	}
-/*
+
 	private async Task SpawnBulletNode()
 	{
 		await Task.Run( ()=>
@@ -37,15 +37,6 @@ public partial class spawbulletrand_main : Node2D
 			_node.LinearVelocity = new Vector2((float)Math.Cos(radian), (float)Math.Sin(radian)) * 1000;
 			GetOwner<Node2D>().GetNode<Node2D>("bulletpak").AddChild(_node);
 		});
-	}
-*/
-	private void SpawnBulletNode()
-	{
-		float radian = centerTheta-0.5f*deltaTheta + rand.Next()%deltaTheta;
-		RigidBody2D _node = (RigidBody2D)(originalBullet.Instantiate());
-		_node.Position = GlobalPosition;
-		_node.LinearVelocity = new Vector2((float)Math.Cos(radian), (float)Math.Sin(radian)) * 1000;
-		GetOwner<Node2D>().GetNode<Node2D>("bulletpak").AddChild(_node);
 	}
 
 	public override void _Ready()

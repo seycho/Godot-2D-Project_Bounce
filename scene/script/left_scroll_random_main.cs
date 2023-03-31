@@ -137,8 +137,6 @@ public partial class left_scroll_random_main : Node2D
 
 	public override void _Process(double delta)
 	{
-		
-		GetNode<RichTextLabel>("ui/fps").Text = Engine.GetFramesPerSecond().ToString();
 		deltaTime = (float)delta;
 		AdjustCountdownDic(cooldown);
 		MoveLeftArea();

@@ -35,15 +35,6 @@ public partial class player_main : CharacterBody2D
 	
 	private List<string> logVelocity = new List<string>();
 
-	public void SaveLogVelocity()
-	{
-		string _line = velMain.ToString()+"\t"+deltaTime.ToString()+"\t"+accMain.ToString();
-		logVelocity.Add(_line);
-
-		if (Input.IsActionJustPressed("save_log"))
-			System.IO.File.WriteAllLinesAsync(@"./velocity_log.txt", logVelocity);
-	}
-
 	private void CalCoefficientFriction()
 	{
 		cefFrictMain = accMain0 * masMain / speedTerminal;
@@ -303,6 +294,5 @@ public partial class player_main : CharacterBody2D
 		// end
 		Velocity = velMain;
 		MoveAndSlide();
-		//SaveLogVelocity();
 	}
 }
