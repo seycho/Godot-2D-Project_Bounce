@@ -303,6 +303,6 @@ public partial class player_main : CharacterBody2D
 		// end
 		Velocity = velMain;
 		MoveAndSlide();
-		SaveLogVelocity();
+		//SaveLogVelocity();
 	}
 }
