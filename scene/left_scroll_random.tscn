@@ -72,3 +72,9 @@ position = Vector2(-400, 0)
 position = Vector2(400, 0)
 
 [node name="spawbulletrand" parent="bossnor1" instance=ExtResource("2_1gcbw")]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CanvasLayer"]
+offset_right = 81.0
+offset_bottom = 26.0
