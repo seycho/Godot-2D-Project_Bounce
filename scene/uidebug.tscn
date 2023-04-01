@@ -1,0 +1,242 @@
+[gd_scene load_steps=2 format=3 uid="uid://cpg0bh57x7knb"]
+
+[ext_resource type="Script" path="res://scene/script/uidebug_main.cs" id="1_ngcxg"]
+
+[node name="uidebug" type="CanvasLayer"]
+script = ExtResource("1_ngcxg")
+
+[node name="panelR" type="VBoxContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 56.0
+alignment = 1
+
+[node name="phy" type="VBoxContainer" parent="panelR"]
+layout_mode = 2
+
+[node name="column" type="HBoxContainer" parent="panelR/phy"]
+layout_mode = 2
+
+[node name="empty1" type="Label" parent="panelR/phy/column"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="x" type="Label" parent="panelR/phy/column"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Position X"
+horizontal_alignment = 2
+
+[node name="y" type="Label" parent="panelR/phy/column"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Position Y"
+horizontal_alignment = 2
+
+[node name="v" type="Label" parent="panelR/phy/column"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Velocity"
+horizontal_alignment = 2
+
+[node name="d" type="Label" parent="panelR/phy/column"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Degree"
+horizontal_alignment = 2
+
+[node name="player" type="HBoxContainer" parent="panelR/phy"]
+layout_mode = 2
+
+[node name="name" type="Label" parent="panelR/phy/player"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Player"
+
+[node name="x" type="Label" parent="panelR/phy/player"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="y" type="Label" parent="panelR/phy/player"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="v" type="Label" parent="panelR/phy/player"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="d" type="Label" parent="panelR/phy/player"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="boss" type="HBoxContainer" parent="panelR/phy"]
+layout_mode = 2
+
+[node name="name" type="Label" parent="panelR/phy/boss"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Boss"
+
+[node name="x" type="Label" parent="panelR/phy/boss"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="y" type="Label" parent="panelR/phy/boss"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="v" type="Label" parent="panelR/phy/boss"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="d" type="Label" parent="panelR/phy/boss"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="empty1" type="Label" parent="panelR"]
+layout_mode = 2
+
+[node name="status" type="VBoxContainer" parent="panelR"]
+layout_mode = 2
+
+[node name="column" type="HBoxContainer" parent="panelR/status"]
+layout_mode = 2
+
+[node name="empty1" type="Label" parent="panelR/status/column"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="hp" type="Label" parent="panelR/status/column"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "HP"
+horizontal_alignment = 2
+
+[node name="mp" type="Label" parent="panelR/status/column"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "MP"
+horizontal_alignment = 2
+
+[node name="player" type="HBoxContainer" parent="panelR/status"]
+layout_mode = 2
+
+[node name="name" type="Label" parent="panelR/status/player"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Player"
+
+[node name="hp" type="Label" parent="panelR/status/player"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="mp" type="Label" parent="panelR/status/player"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="boss" type="HBoxContainer" parent="panelR/status"]
+layout_mode = 2
+
+[node name="name" type="Label" parent="panelR/status/boss"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Boss"
+
+[node name="hp" type="Label" parent="panelR/status/boss"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="mp" type="Label" parent="panelR/status/boss"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="empty2" type="Label" parent="panelR"]
+layout_mode = 2
+
+[node name="bullet" type="VBoxContainer" parent="panelR"]
+layout_mode = 2
+
+[node name="column" type="HBoxContainer" parent="panelR/bullet"]
+layout_mode = 2
+
+[node name="empty1" type="Label" parent="panelR/bullet/column"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="player" type="Label" parent="panelR/bullet/column"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Player"
+horizontal_alignment = 2
+
+[node name="enemy" type="Label" parent="panelR/bullet/column"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Enemy"
+horizontal_alignment = 2
+
+[node name="num" type="HBoxContainer" parent="panelR/bullet"]
+layout_mode = 2
+
+[node name="name" type="Label" parent="panelR/bullet/num"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Bullet num"
+
+[node name="player" type="Label" parent="panelR/bullet/num"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="enemy" type="Label" parent="panelR/bullet/num"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="panelL" type="VBoxContainer" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -516.0
+offset_bottom = 56.0
+grow_horizontal = 0
+
+[node name="time" type="HBoxContainer" parent="panelL"]
+layout_mode = 2
+alignment = 2
+
+[node name="num" type="Label" parent="panelL/time"]
+layout_mode = 2
+text = "1"
+
+[node name="name" type="Label" parent="panelL/time"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+text = "Time"
+horizontal_alignment = 2
+
+[node name="fps" type="HBoxContainer" parent="panelL"]
+layout_mode = 2
+alignment = 2
+
+[node name="num" type="Label" parent="panelL/fps"]
+layout_mode = 2
+text = "1"
+horizontal_alignment = 2
+
+[node name="name" type="Label" parent="panelL/fps"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+text = "FPS"
+horizontal_alignment = 2

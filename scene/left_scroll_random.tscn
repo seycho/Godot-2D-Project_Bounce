@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://b2c8gksim7gby"]
+[gd_scene load_steps=9 format=3 uid="uid://b2c8gksim7gby"]
 
 [ext_resource type="Script" path="res://scene/script/left_scroll_random_main.cs" id="1_jw8fd"]
 [ext_resource type="PackedScene" uid="uid://cr4nyv2jyxia2" path="res://enemy/spawbulletrand.tscn" id="2_1gcbw"]
+[ext_resource type="PackedScene" uid="uid://cpg0bh57x7knb" path="res://scene/uidebug.tscn" id="2_b3y33"]
 [ext_resource type="PackedScene" uid="uid://bkamvdhxfxahu" path="res://player/player.tscn" id="2_gqs6k"]
 [ext_resource type="PackedScene" uid="uid://dkib0884nmc61" path="res://enemy/bossnor1.tscn" id="4_t0uhi"]
 
@@ -16,6 +17,8 @@ size = Vector2(50, 768)
 
 [node name="terrain" type="Node2D"]
 script = ExtResource("1_jw8fd")
+
+[node name="uidebug" parent="." instance=ExtResource("2_b3y33")]
 
 [node name="playground" type="Node2D" parent="."]
 
@@ -68,13 +71,7 @@ position = Vector2(-400, 0)
 
 [node name="bulletpak" type="Node2D" parent="."]
 
-[node name="bossnor1" parent="." instance=ExtResource("4_t0uhi")]
+[node name="boss" parent="." instance=ExtResource("4_t0uhi")]
 position = Vector2(400, 0)
 
-[node name="spawbulletrand" parent="bossnor1" instance=ExtResource("2_1gcbw")]
-
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-
-[node name="RichTextLabel" type="RichTextLabel" parent="CanvasLayer"]
-offset_right = 81.0
-offset_bottom = 26.0
+[node name="spawbulletrand" parent="boss" instance=ExtResource("2_1gcbw")]

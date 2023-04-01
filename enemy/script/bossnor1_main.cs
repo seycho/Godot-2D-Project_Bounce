@@ -4,6 +4,11 @@ using System.Collections.Generic;
 
 public partial class bossnor1_main : RigidBody2D
 {
+	// public
+	public float SpeedProcess = 1.0f;
+	public float HealPoint = 0;
+	public float ManaPoint = 0;
+	public Vector2 Velocity = new Vector2(0, 0);
 	public Vector2 posMoveCen = new Vector2(0, 0);
 
 	private Random rand = new Random();
@@ -31,9 +36,10 @@ public partial class bossnor1_main : RigidBody2D
 
 	private void InitialProcess(double delta)
 	{
-		deltaTime = (float)delta;
+		deltaTime = (float)delta * SpeedProcess;
 		AdjustCountdownDic(cooldown);
 		AdjustCountdownDic(duration);
+		ManaPoint += 1 * deltaTime;
 	}
 
 	private double ModelDiffusion(double x,double sigma)
@@ -72,10 +78,10 @@ public partial class bossnor1_main : RigidBody2D
 
 	private void ActionMoveDestination()
 	{
-		Vector2 _temp = posMoveDes - Position;
-		Vector2 _directionMove = _temp.Normalized();
-		Vector2 velocity = 100 * _directionMove * _temp.DistanceTo(Vector2.Zero)/100;
-		Position = Position + velocity * deltaTime;
+		Vector2 _forward = posMoveDes - Position;
+		Vector2 _directionMove = _forward.Normalized();
+		Velocity = _directionMove * _forward.DistanceTo(Vector2.Zero);
+		Position = Position + Velocity * deltaTime;
 	}
 
 	private void ActionUnderAttack()
@@ -86,6 +92,7 @@ public partial class bossnor1_main : RigidBody2D
 			condition["enemy_hit"] = true;
 			duration["enemy_hit"][0] = duration["enemy_hit"][1];
 			GetNode<AudioStreamPlayer>("sound/hit").Play();
+			HealPoint -= 1;
 		}
 
 		if (condition["enemy_hit"] == true)

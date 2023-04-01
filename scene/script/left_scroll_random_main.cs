@@ -4,6 +4,13 @@ using System.Collections.Generic;
 
 public partial class left_scroll_random_main : Node2D
 {
+	public float SpeedProcess = 1.0f;
+	public string pathPlayer = "player";
+	public string pathBoss = "boss";
+	public string pathBulletSpawner = "boss/spawbulletrand";
+	public string pathBulletPack = "bulletpak";
+	public int IsPause = -1;
+
 	private float posCurrentX = 0;
 	private float posLimLefX = -1366/2;
 	private float posLimRigX = 1366/2;
@@ -22,6 +29,18 @@ public partial class left_scroll_random_main : Node2D
 	private float posGeneWallTopX;
 	private float posGeneWallBotX;
 	private float deltaTime;
+
+	public void SetProcessSpeed(float _speed)
+	{
+		SpeedProcess = _speed;
+		GetNode<CharacterBody2D>(pathPlayer).GetNode<player_main>(".").SpeedProcess = _speed;
+		GetNode<RigidBody2D>(pathBoss).GetNode<bossnor1_main>(".").SpeedProcess = _speed;
+		GetNode<Node2D>(pathBulletSpawner).GetNode<spawbulletrand_main>(".").SpeedProcess = _speed;
+		foreach (var _node in GetNode<Node2D>(pathBulletPack).GetChildren())
+		{
+			_node.GetNode<bullet_main>(".").SpeedProcess = _speed;
+		}
+	}
 
 	private void AdjustCountdownDic(Dictionary<string, float[]> countdownDic)
 	{
@@ -137,13 +156,18 @@ public partial class left_scroll_random_main : Node2D
 
 	public override void _Process(double delta)
 	{
-		deltaTime = (float)delta;
+		if (Input.IsActionJustPressed("pause"))
+			IsPause *= -1;
+			SetProcessSpeed(1);
+		if (IsPause > 0)
+			SetProcessSpeed(0.0f);
+		deltaTime = (float)delta * SpeedProcess;
 		AdjustCountdownDic(cooldown);
 		MoveLeftArea();
 		SpawnWall();
 		SpawnAstronoid();
 		RemoveAsteroid();
 		RemoveBullet();
-		GetNode<RigidBody2D>("bossnor1").GetNode<bossnor1_main>(".").posMoveCen.X = posCurrentX+300;
+		GetNode<RigidBody2D>("boss").GetNode<bossnor1_main>(".").posMoveCen.X = posCurrentX+300;
 	}
 }
