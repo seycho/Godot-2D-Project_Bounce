@@ -3,6 +3,8 @@ using System;
 
 public partial class bullet_main : RigidBody2D
 {
+	public float SpeedProcess = 1.0f;
+
 	private bool isActive = true;
 	private float velDefault = 1000;
 
@@ -60,7 +62,7 @@ public partial class bullet_main : RigidBody2D
 		if (isCollision)
 		{
 			GetNode<AudioStreamPlayer>("sound/hit").Play();
-			LinearVelocity = LinearVelocity / LinearVelocity.Length() * velDefault;
+			LinearVelocity = LinearVelocity / LinearVelocity.Length() * velDefault * SpeedProcess;
 		}
 	}
 

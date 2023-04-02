@@ -4,17 +4,21 @@ using System.Collections.Generic;
 
 public partial class bossnor1_main : RigidBody2D
 {
+	// public
+	public float SpeedProcess = 1.0f;
+	public float HealPoint = 0;
+	public float ManaPoint = 0;
+	public Vector2 Velocity = new Vector2(0, 0);
 	public Vector2 posMoveCen = new Vector2(0, 0);
+	public Dictionary<string, float[]> Cooldown = new Dictionary<string, float[]>();
+	public Dictionary<string, float[]> Duration = new Dictionary<string, float[]>();
+	public Dictionary<string, float[]> Trigger = new Dictionary<string, float[]>();
+	public Dictionary<string, bool> Condition = new Dictionary<string, bool>();
 
 	private Random rand = new Random();
 	private Vector2 posLimRandom = new Vector2(768/2, 768/2);
 	private Vector2 posMoveAim = new Vector2(0, 0);
 	private Vector2 posMoveDes = new Vector2(0, 0);
-
-	private Dictionary<string, float[]> cooldown = new Dictionary<string, float[]>();
-	private Dictionary<string, float[]> duration = new Dictionary<string, float[]>();
-	private Dictionary<string, float[]> trigger = new Dictionary<string, float[]>();
-	private Dictionary<string, bool> condition = new Dictionary<string, bool>();
 
 	private float deltaTime;
 
@@ -31,9 +35,10 @@ public partial class bossnor1_main : RigidBody2D
 
 	private void InitialProcess(double delta)
 	{
-		deltaTime = (float)delta;
-		AdjustCountdownDic(cooldown);
-		AdjustCountdownDic(duration);
+		deltaTime = (float)delta * SpeedProcess;
+		AdjustCountdownDic(Cooldown);
+		AdjustCountdownDic(Duration);
+		ManaPoint += 1 * deltaTime;
 	}
 
 	private double ModelDiffusion(double x,double sigma)
@@ -60,47 +65,48 @@ public partial class bossnor1_main : RigidBody2D
 
 	private void ActionMoveRandom()
 	{
-		if (cooldown["random_aim"][0] == 0)
+		if (Cooldown["random_aim"][0] == 0)
 		{
 			float _xAim = GetNextPos(posMoveAim.X, posLimRandom.X);
 			float _yAim = GetNextPos(posMoveAim.Y, posLimRandom.Y);
 			posMoveAim = new Vector2(_xAim, _yAim);
-			cooldown["random_aim"][0] = 0.5f+(float)rand.NextDouble()*2.0f;
+			Cooldown["random_aim"][0] = 0.5f+(float)rand.NextDouble()*2.0f;
 			posMoveDes = posMoveCen + posMoveAim;
 		}
 	}
 
 	private void ActionMoveDestination()
 	{
-		Vector2 _temp = posMoveDes - Position;
-		Vector2 _directionMove = _temp.Normalized();
-		Vector2 velocity = 100 * _directionMove * _temp.DistanceTo(Vector2.Zero)/100;
-		Position = Position + velocity * deltaTime;
+		Vector2 _forward = posMoveDes - Position;
+		Vector2 _directionMove = _forward.Normalized();
+		Velocity = _directionMove * _forward.DistanceTo(Vector2.Zero);
+		Position = Position + Velocity * deltaTime;
 	}
 
 	private void ActionUnderAttack()
 	{
-		if (trigger["enemy_hit"][0] != 0)
+		if (Trigger["enemy_hit"][0] != 0)
 		{
-			trigger["enemy_hit"][0] = 0;
-			condition["enemy_hit"] = true;
-			duration["enemy_hit"][0] = duration["enemy_hit"][1];
+			Trigger["enemy_hit"][0] = 0;
+			Condition["enemy_hit"] = true;
+			Duration["enemy_hit"][0] = Duration["enemy_hit"][1];
 			GetNode<AudioStreamPlayer>("sound/hit").Play();
+			HealPoint -= 1;
 		}
 
-		if (condition["enemy_hit"] == true)
+		if (Condition["enemy_hit"] == true)
 		{
-			float _durationTimeRatio = duration["enemy_hit"][0] / duration["enemy_hit"][1];
-			float _alpha = 0.5f * _durationTimeRatio;
+			float _DurationTimeRatio = Duration["enemy_hit"][0] / Duration["enemy_hit"][1];
+			float _alpha = 0.5f * _DurationTimeRatio;
 			GetNode<Sprite2D>("posimg/BallCyan").Modulate = new Color(1, 1, 1, _alpha);
-			float shakeX = (float)rand.NextDouble() * _durationTimeRatio * 10;
-			float shakeY = (float)rand.NextDouble() * _durationTimeRatio * 10;
+			float shakeX = (float)rand.NextDouble() * _DurationTimeRatio * 10;
+			float shakeY = (float)rand.NextDouble() * _DurationTimeRatio * 10;
 			GetNode<Marker2D>("posimg").Position = new Vector2(shakeX, shakeY);
 		}
 
-		if (duration["enemy_hit"][0] == 0)
+		if (Duration["enemy_hit"][0] == 0)
 		{
-			condition["enemy_hit"] = false;
+			Condition["enemy_hit"] = false;
 		}
 	}
 
@@ -117,17 +123,17 @@ public partial class bossnor1_main : RigidBody2D
 			}
 			if (_damage > 0)
 			{
-				trigger["enemy_hit"][0] = 10;
+				Trigger["enemy_hit"][0] = 10;
 			}
 		}
 	}
 
 	public override void _Ready()
 	{
-		cooldown.Add("random_aim", new float[] {0, 0});
-		condition.Add("enemy_hit", false);
-		duration.Add("enemy_hit", new float[] {0, 1});
-		trigger.Add("enemy_hit", new float[] {0, 10});
+		Cooldown.Add("random_aim", new float[] {0, 0});
+		Condition.Add("enemy_hit", false);
+		Duration.Add("enemy_hit", new float[] {0, 1});
+		Trigger.Add("enemy_hit", new float[] {0, 10});
 	}
 
 	public override void _Process(double delta)

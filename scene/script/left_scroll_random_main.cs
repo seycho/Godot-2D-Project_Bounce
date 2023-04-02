@@ -4,6 +4,14 @@ using System.Collections.Generic;
 
 public partial class left_scroll_random_main : Node2D
 {
+	public float SpeedProcess = 1.0f;
+	public string pathPlayer = "player";
+	public string pathBoss = "boss";
+	public string pathBulletSpawner = "boss/spawbulletrand";
+	public string pathBulletPack = "bulletpak";
+	public int IsPause = -1;
+	public Dictionary<string, float[]> Cooldown = new Dictionary<string, float[]>();
+
 	private float posCurrentX = 0;
 	private float posLimLefX = -1366/2;
 	private float posLimRigX = 1366/2;
@@ -16,12 +24,23 @@ public partial class left_scroll_random_main : Node2D
 	private Random rand = new Random();
 	private List<Vector2> polygonWallTop = new List<Vector2>();
 	private List<Vector2> polygonWallBot = new List<Vector2>();
-	private Dictionary<string, float[]> cooldown = new Dictionary<string, float[]>();
 
 	private PackedScene originalAsteroid;
 	private float posGeneWallTopX;
 	private float posGeneWallBotX;
 	private float deltaTime;
+
+	public void SetProcessSpeed(float _speed)
+	{
+		SpeedProcess = _speed;
+		GetNode<CharacterBody2D>(pathPlayer).GetNode<player_main>(".").SpeedProcess = _speed;
+		GetNode<RigidBody2D>(pathBoss).GetNode<bossnor1_main>(".").SpeedProcess = _speed;
+		GetNode<Node2D>(pathBulletSpawner).GetNode<spawbulletrand_main>(".").SpeedProcess = _speed;
+		foreach (var _node in GetNode<Node2D>(pathBulletPack).GetChildren())
+		{
+			_node.GetNode<bullet_main>(".").SpeedProcess = _speed;
+		}
+	}
 
 	private void AdjustCountdownDic(Dictionary<string, float[]> countdownDic)
 	{
@@ -93,9 +112,9 @@ public partial class left_scroll_random_main : Node2D
 
 	private void SpawnAstronoid()
 	{
-		if (cooldown["asteroid_spawn"][0] == 0)
+		if (Cooldown["asteroid_spawn"][0] == 0)
 		{
-			cooldown["asteroid_spawn"][0] = rand.Next(randAsteroidTime[0], randAsteroidTime[1]);
+			Cooldown["asteroid_spawn"][0] = rand.Next(randAsteroidTime[0], randAsteroidTime[1]);
 			StaticBody2D _node = (StaticBody2D)(originalAsteroid.Instantiate());
 			_node.Position = new Vector2(posCurrentX+posLimLefX-200, rand.Next((int)posLimTopY,(int)posLimBotY));
 			GetNode<Node2D>("asteroidpak").AddChild(_node);
@@ -131,19 +150,24 @@ public partial class left_scroll_random_main : Node2D
 		polygonWallTop.Add(new Vector2(posGeneWallTopX, posLimTopY+1));
 		posGeneWallBotX = posLimRigX-1;
 		polygonWallBot.Add(new Vector2(posGeneWallBotX, posLimBotY-1));
-		cooldown.Add("asteroid_spawn", new float[] {0, 0});
+		Cooldown.Add("asteroid_spawn", new float[] {0, 0});
 		originalAsteroid = GD.Load<PackedScene>("res://terrain/asteroid.tscn");
 	}
 
 	public override void _Process(double delta)
 	{
-		deltaTime = (float)delta;
-		AdjustCountdownDic(cooldown);
+		if (Input.IsActionJustPressed("pause"))
+			IsPause *= -1;
+			SetProcessSpeed(1);
+		if (IsPause > 0)
+			SetProcessSpeed(0.0f);
+		deltaTime = (float)delta * SpeedProcess;
+		AdjustCountdownDic(Cooldown);
 		MoveLeftArea();
 		SpawnWall();
 		SpawnAstronoid();
 		RemoveAsteroid();
 		RemoveBullet();
-		GetNode<RigidBody2D>("bossnor1").GetNode<bossnor1_main>(".").posMoveCen.X = posCurrentX+300;
+		GetNode<RigidBody2D>("boss").GetNode<bossnor1_main>(".").posMoveCen.X = posCurrentX+300;
 	}
 }

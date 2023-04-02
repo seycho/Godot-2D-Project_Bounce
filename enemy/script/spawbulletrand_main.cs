@@ -9,8 +9,10 @@ public partial class spawbulletrand_main : Node2D
 	public float centerTheta = 3.141592f;
 	[Export(PropertyHint.Range, "0,6.283184")]
 	public float deltaTheta = 1.570796f;
-	
-	private Dictionary<string, float[]> cooldown = new Dictionary<string, float[]>();
+
+	public float SpeedProcess = 1.0f;
+	public Dictionary<string, float[]> Cooldown = new Dictionary<string, float[]>();
+
 	private PackedScene originalBullet;
 	private Random rand = new Random();
 
@@ -35,24 +37,25 @@ public partial class spawbulletrand_main : Node2D
 			RigidBody2D _node = (RigidBody2D)(originalBullet.Instantiate());
 			_node.Position = GlobalPosition;
 			_node.LinearVelocity = new Vector2((float)Math.Cos(radian), (float)Math.Sin(radian)) * 1000;
+			_node.GetNode<bullet_main>(".").SpeedProcess = SpeedProcess;
 			GetOwner<Node2D>().GetNode<Node2D>("bulletpak").AddChild(_node);
 		});
 	}
 
 	public override void _Ready()
 	{
-		cooldown.Add("spawn", new float[] {0, 1.0f});
+		Cooldown.Add("spawn", new float[] {0, 1.0f});
 		originalBullet = GD.Load<PackedScene>("res://enemy/bullet.tscn");
 	}
 
 	public override void _Process(double delta)
 	{
-		deltaTime = (float)delta;
-		AdjustCountdownDic(cooldown);
+		deltaTime = (float)delta * SpeedProcess;
+		AdjustCountdownDic(Cooldown);
 		
-		if (cooldown["spawn"][0] == 0)
+		if (Cooldown["spawn"][0] == 0)
 		{
-			cooldown["spawn"][0] = cooldown["spawn"][1];
+			Cooldown["spawn"][0] = Cooldown["spawn"][1];
 			
 			SpawnBulletNode();
 		}
