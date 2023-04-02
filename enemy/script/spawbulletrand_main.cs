@@ -11,8 +11,8 @@ public partial class spawbulletrand_main : Node2D
 	public float deltaTheta = 1.570796f;
 
 	public float SpeedProcess = 1.0f;
+	public Dictionary<string, float[]> Cooldown = new Dictionary<string, float[]>();
 
-	private Dictionary<string, float[]> cooldown = new Dictionary<string, float[]>();
 	private PackedScene originalBullet;
 	private Random rand = new Random();
 
@@ -44,18 +44,18 @@ public partial class spawbulletrand_main : Node2D
 
 	public override void _Ready()
 	{
-		cooldown.Add("spawn", new float[] {0, 1.0f});
+		Cooldown.Add("spawn", new float[] {0, 1.0f});
 		originalBullet = GD.Load<PackedScene>("res://enemy/bullet.tscn");
 	}
 
 	public override void _Process(double delta)
 	{
 		deltaTime = (float)delta * SpeedProcess;
-		AdjustCountdownDic(cooldown);
+		AdjustCountdownDic(Cooldown);
 		
-		if (cooldown["spawn"][0] == 0)
+		if (Cooldown["spawn"][0] == 0)
 		{
-			cooldown["spawn"][0] = cooldown["spawn"][1];
+			Cooldown["spawn"][0] = Cooldown["spawn"][1];
 			
 			SpawnBulletNode();
 		}

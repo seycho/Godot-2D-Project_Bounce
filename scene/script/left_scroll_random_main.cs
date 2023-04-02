@@ -10,6 +10,7 @@ public partial class left_scroll_random_main : Node2D
 	public string pathBulletSpawner = "boss/spawbulletrand";
 	public string pathBulletPack = "bulletpak";
 	public int IsPause = -1;
+	public Dictionary<string, float[]> Cooldown = new Dictionary<string, float[]>();
 
 	private float posCurrentX = 0;
 	private float posLimLefX = -1366/2;
@@ -23,7 +24,6 @@ public partial class left_scroll_random_main : Node2D
 	private Random rand = new Random();
 	private List<Vector2> polygonWallTop = new List<Vector2>();
 	private List<Vector2> polygonWallBot = new List<Vector2>();
-	private Dictionary<string, float[]> cooldown = new Dictionary<string, float[]>();
 
 	private PackedScene originalAsteroid;
 	private float posGeneWallTopX;
@@ -112,9 +112,9 @@ public partial class left_scroll_random_main : Node2D
 
 	private void SpawnAstronoid()
 	{
-		if (cooldown["asteroid_spawn"][0] == 0)
+		if (Cooldown["asteroid_spawn"][0] == 0)
 		{
-			cooldown["asteroid_spawn"][0] = rand.Next(randAsteroidTime[0], randAsteroidTime[1]);
+			Cooldown["asteroid_spawn"][0] = rand.Next(randAsteroidTime[0], randAsteroidTime[1]);
 			StaticBody2D _node = (StaticBody2D)(originalAsteroid.Instantiate());
 			_node.Position = new Vector2(posCurrentX+posLimLefX-200, rand.Next((int)posLimTopY,(int)posLimBotY));
 			GetNode<Node2D>("asteroidpak").AddChild(_node);
@@ -150,7 +150,7 @@ public partial class left_scroll_random_main : Node2D
 		polygonWallTop.Add(new Vector2(posGeneWallTopX, posLimTopY+1));
 		posGeneWallBotX = posLimRigX-1;
 		polygonWallBot.Add(new Vector2(posGeneWallBotX, posLimBotY-1));
-		cooldown.Add("asteroid_spawn", new float[] {0, 0});
+		Cooldown.Add("asteroid_spawn", new float[] {0, 0});
 		originalAsteroid = GD.Load<PackedScene>("res://terrain/asteroid.tscn");
 	}
 
@@ -162,7 +162,7 @@ public partial class left_scroll_random_main : Node2D
 		if (IsPause > 0)
 			SetProcessSpeed(0.0f);
 		deltaTime = (float)delta * SpeedProcess;
-		AdjustCountdownDic(cooldown);
+		AdjustCountdownDic(Cooldown);
 		MoveLeftArea();
 		SpawnWall();
 		SpawnAstronoid();

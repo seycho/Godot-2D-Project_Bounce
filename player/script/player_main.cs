@@ -9,6 +9,10 @@ public partial class player_main : CharacterBody2D
 	public float SpeedProcess = 1.0f;
 	public float HealPoint = 0;
 	public float ManaPoint = 0;
+	public Dictionary<string, float[]> Cooldown = new Dictionary<string, float[]>();
+	public Dictionary<string, float[]> Duration = new Dictionary<string, float[]>();
+	public Dictionary<string, float[]> Trigger = new Dictionary<string, float[]>();
+	public Dictionary<string, bool> Condition = new Dictionary<string, bool>();
 
 	// player physics
 	private float masMain = 5; // mass of character, kilogram
@@ -24,10 +28,6 @@ public partial class player_main : CharacterBody2D
 	private float velShieldPush = 1000;
 
 	// variables
-	private Dictionary<string, float[]> cooldown = new Dictionary<string, float[]>();
-	private Dictionary<string, float[]> duration = new Dictionary<string, float[]>();
-	private Dictionary<string, float[]> trigger = new Dictionary<string, float[]>();
-	private Dictionary<string, bool> condition = new Dictionary<string, bool>();
 	private Vector2 foeForward = Vector2.Zero;
 	private Vector2 foeBackward = Vector2.Zero;
 	private Vector2 accMain = Vector2.Zero;
@@ -57,10 +57,10 @@ public partial class player_main : CharacterBody2D
 	private void InitialProcess(double delta)
 	{
 		deltaTime = (float)delta * SpeedProcess;
-		// adjust cooldown
-		AdjustCountdownDic(cooldown);
-		AdjustCountdownDic(duration);
-		AdjustCountdownDic(trigger);
+		// adjust Cooldown
+		AdjustCountdownDic(Cooldown);
+		AdjustCountdownDic(Duration);
+		AdjustCountdownDic(Trigger);
 	}
 
 	private void InputMove()
@@ -90,18 +90,18 @@ public partial class player_main : CharacterBody2D
 	{
 		if (Input.IsActionJustPressed("player_dash"))
 		{
-			trigger["player_dash"][0] = trigger["player_dash"][1];
+			Trigger["player_dash"][0] = Trigger["player_dash"][1];
 		}
 	}
 
 	private void ActionDash()
 	{
-		if (trigger["player_dash"][0] != 0)
+		if (Trigger["player_dash"][0] != 0)
 		{
-			if (cooldown["player_dash"][0] == 0)
+			if (Cooldown["player_dash"][0] == 0)
 			{
-				trigger["player_dash"][0] = 0;
-				cooldown["player_dash"][0] = cooldown["player_dash"][1];
+				Trigger["player_dash"][0] = 0;
+				Cooldown["player_dash"][0] = Cooldown["player_dash"][1];
 				velMain += speedDash * velMain.Normalized();
 			}
 		}
@@ -109,37 +109,37 @@ public partial class player_main : CharacterBody2D
 
 	private void ActionUnderAttack()
 	{
-		// trigger check
-		if (trigger["player_hit"][0] != 0)
+		// Trigger check
+		if (Trigger["player_hit"][0] != 0)
 		{
-			trigger["player_hit"][0] = 0;
-			condition["player_hit"] = true;
-			duration["player_hit"][0] = duration["player_hit"][1];
+			Trigger["player_hit"][0] = 0;
+			Condition["player_hit"] = true;
+			Duration["player_hit"][0] = Duration["player_hit"][1];
 			GetNode<AudioStreamPlayer>("sound/hit").Play();
 			GetNode<Area2D>("reghit").CollisionMask -= 2;
 			HealPoint -= totalDamage;
 		}
 
 		// blink body
-		if (condition["player_hit"] == true)
+		if (Condition["player_hit"] == true)
 		{
-			if (duration["player_hit"][0] % 0.6 > 0.3)
+			if (Duration["player_hit"][0] % 0.6 > 0.3)
 				GetNode<Sprite2D>("posbody/Ball").Modulate = new Color(1, 1, 1, 0.5f);
 			else
 				GetNode<Sprite2D>("posbody/Ball").Modulate = new Color(1, 1, 1, 1);
 		}
 
 		// over
-		if (duration["player_hit"][0] == 0)
+		if (Duration["player_hit"][0] == 0)
 		{
-			condition["player_hit"] = false;
+			Condition["player_hit"] = false;
 			GetNode<Area2D>("reghit").CollisionMask += 2;
 		}
 	}
 
 	private void ColliPlayer()
 	{
-		if (condition["player_hit"] == false)
+		if (Condition["player_hit"] == false)
 		{
 			totalDamage = 0;
 			foreach (var _area in GetNode<Area2D>("reghit").GetOverlappingAreas())
@@ -163,7 +163,7 @@ public partial class player_main : CharacterBody2D
 				}
 				if (totalDamage > 0)
 				{
-					trigger["player_hit"][0] = 10;
+					Trigger["player_hit"][0] = 10;
 					velMain += 2 * _momentum / masMain;
 				}
 			}
@@ -174,18 +174,18 @@ public partial class player_main : CharacterBody2D
 	{
 		if (Input.IsActionJustPressed("player_shieldpush"))
 		{
-			trigger["shield_push"][0] = trigger["shield_push"][1];
+			Trigger["shield_push"][0] = Trigger["shield_push"][1];
 		}
 	}
 
 	private void ActionShieldPush()
 	{
-		if (trigger["shield_push"][0] > 0)
+		if (Trigger["shield_push"][0] > 0)
 		{
-			if (cooldown["shield_push"][0] == 0)
+			if (Cooldown["shield_push"][0] == 0)
 			{
-				trigger["shield_push"][0] = 0;
-				cooldown["shield_push"][0] = cooldown["shield_push"][1];
+				Trigger["shield_push"][0] = 0;
+				Cooldown["shield_push"][0] = Cooldown["shield_push"][1];
 				velShield.X = velShieldPush;
 			}
 		}
@@ -266,13 +266,13 @@ public partial class player_main : CharacterBody2D
 
 	public override void _Ready()
 	{
-		cooldown.Add("shield_push", new float[] {0, 1});
-		trigger.Add("shield_push", new float[] {0, 0.3f});
-		cooldown.Add("player_dash", new float[] {0, 1});
-		trigger.Add("player_dash", new float[] {0, 0.2f});
-		condition.Add("player_hit", false);
-		duration.Add("player_hit", new float[] {0, 3});
-		trigger.Add("player_hit", new float[] {0, 10});
+		Cooldown.Add("shield_push", new float[] {0, 1});
+		Trigger.Add("shield_push", new float[] {0, 0.3f});
+		Cooldown.Add("player_dash", new float[] {0, 1});
+		Trigger.Add("player_dash", new float[] {0, 0.2f});
+		Condition.Add("player_hit", false);
+		Duration.Add("player_hit", new float[] {0, 3});
+		Trigger.Add("player_hit", new float[] {0, 10});
 
 		CalCoefficientFriction();
 	}
