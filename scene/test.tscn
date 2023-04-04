@@ -28,12 +28,13 @@ color = Color(0.380392, 0.380392, 0.380392, 1)
 polygon = PackedVector2Array(-136, -111, -42, 39, 141, 7, 337, -18, 473, 22, 760, 22, 883, -5, 1041, -47, 1154, -2, 1135, 47, 1189, 136, 1162, 284, 1147, 377, 1144, 479, 1135, 607, 1151, 653, 1277, 562, 1324, 378, 1322, -109)
 
 [node name="player" parent="." instance=ExtResource("1_2qhoe")]
-position = Vector2(200, 300)
+position = Vector2(400, 300)
 
 [node name="Camera2D" type="Camera2D" parent="player"]
 zoom = Vector2(0.5, 0.5)
 
 [node name="spawbulletrand" parent="." instance=ExtResource("2_rkn4a")]
-position = Vector2(896, 320)
+position = Vector2(896, 300)
+deltaTheta = 0.148
 
 [node name="bulletpak" type="Node2D" parent="."]

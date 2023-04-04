@@ -22,6 +22,12 @@ public partial class bossnor1_main : RigidBody2D
 
 	private float deltaTime;
 
+	public void ColliBody()
+	{
+		Trigger["enemy_hit"][0] = 10;
+		ActionUnderAttack();
+	}
+
 	private void AdjustCountdownDic(Dictionary<string, float[]> countdownDic)
 	{
 		foreach (string key in countdownDic.Keys)
@@ -110,20 +116,16 @@ public partial class bossnor1_main : RigidBody2D
 		}
 	}
 
-	private void ColliEnemy()
+	private void CollAtkCheck()
 	{
-		foreach (var _area in GetNode<Area2D>("areahit").GetOverlappingAreas())
+		foreach (var _body in GetNode<Area2D>("areaatk").GetOverlappingBodies())
 		{
-			float _damage = 0;
-			RigidBody2D _bulletBody = _area.GetOwner<RigidBody2D>();
-			if (_bulletBody.IsInGroup("player"))
+			if (_body.IsInGroup("body"))
 			{
-				_bulletBody.GetNode<bullet_main>(".").HitEnemy();
-				_damage += 1;
-			}
-			if (_damage > 0)
-			{
-				Trigger["enemy_hit"][0] = 10;
+				if (_body.IsInGroup("player"))
+				{
+					_body.GetNode<player_main>(".").ColliBody(Position, 10000, 5);
+				}
 			}
 		}
 	}
@@ -142,7 +144,7 @@ public partial class bossnor1_main : RigidBody2D
 		ActionMoveRandom();
 		ActionMoveDestination();
 
-		ColliEnemy();
+		CollAtkCheck();
 		ActionUnderAttack();
 	}
 }

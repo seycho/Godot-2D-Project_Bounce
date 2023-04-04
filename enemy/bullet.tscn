@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://cd51wtirkixto"]
+[gd_scene load_steps=8 format=3 uid="uid://cd51wtirkixto"]
 
 [ext_resource type="Texture2D" uid="uid://disu6gvuertgd" path="res://enemy/image/ball_yellow.png" id="1_56o1k"]
 [ext_resource type="Script" path="res://enemy/script/bullet_main.cs" id="1_ppg42"]
@@ -6,26 +6,17 @@
 [ext_resource type="AudioStream" uid="uid://mhxmhjd08wxg" path="res://sound/bullet_hit.mp3" id="4_lr7rp"]
 [ext_resource type="AudioStream" uid="uid://bspj3dh4uvt5s" path="res://sound/bullet_crash.mp3" id="5_0lp23"]
 
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_o4g5t"]
-friction = 0.0
-bounce = 1.0
-
 [sub_resource type="CircleShape2D" id="CircleShape2D_y7fia"]
-radius = 12.0
+radius = 13.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_2npqf"]
-radius = 13.0
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_487vv"]
-radius = 13.0
+radius = 20.0
 
 [node name="bullet" type="RigidBody2D" groups=["bullet", "enemy"]]
 collision_layer = 8
 collision_mask = 11
-physics_material_override = SubResource("PhysicsMaterial_o4g5t")
 gravity_scale = 0.0
-continuous_cd = 1
-linear_damp_mode = 1
+continuous_cd = 2
 script = ExtResource("1_ppg42")
 
 [node name="colshape" type="CollisionShape2D" parent="."]
@@ -39,21 +30,19 @@ texture = ExtResource("3_sbrvw")
 scale = Vector2(0.1, 0.1)
 texture = ExtResource("1_56o1k")
 
-[node name="regdet" type="Area2D" parent="."]
+[node name="regatk" type="Area2D" parent="."]
 collision_layer = 0
 collision_mask = 15
 
-[node name="colshape" type="CollisionShape2D" parent="regdet"]
-visible = false
+[node name="colshape" type="CollisionShape2D" parent="regatk"]
 shape = SubResource("CircleShape2D_2npqf")
 
-[node name="regatk" type="Area2D" parent="."]
-collision_layer = 10
-collision_mask = 14
+[node name="regdet" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 11
 
-[node name="colshape" type="CollisionShape2D" parent="regatk"]
-visible = false
-shape = SubResource("CircleShape2D_487vv")
+[node name="colshape" type="CollisionShape2D" parent="regdet"]
+shape = SubResource("CircleShape2D_2npqf")
 
 [node name="sound" type="Node" parent="."]
 

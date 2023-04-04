@@ -35,8 +35,41 @@ public partial class player_main : CharacterBody2D
 	private Vector2 dirControl = Vector2.Zero;
 	private Vector2 velShield = Vector2.Zero;
 
-	private float totalDamage;
 	private float deltaTime;
+
+	public void ColliBody(Vector2 _position, float _momentumBullet, float _damage)
+	{
+		if (Condition["player_hit"] == false)
+		{
+			Rebound((Position - _position).Normalized(), _momentumBullet);
+			if (_damage > 0)
+			{
+				Trigger["player_hit"][0] = 10;
+				ActionUnderAttack(_damage);
+			}
+		}
+	}
+
+	public void ColliShield(Vector2 _position, float _momentumBullet)
+	{
+		Rebound((GetNode<CharacterBody2D>("posshield/body").GlobalPosition - _position).Normalized(), _momentumBullet);
+		if (Cooldown["mana_get"][0] == 0)
+		{
+			Cooldown["mana_get"][0] = Cooldown["mana_get"][1];
+			GetNode<AudioStreamPlayer>("sound/reflect").Play();
+			ManaPoint += 1;
+		}
+	}
+
+	private void Rebound(Vector2 _direction, float _momentumBullet)
+	{
+		if (Cooldown["rebound"][0] == 0)
+		{
+			Cooldown["rebound"][0] = Cooldown["rebound"][1];
+			Vector2 _momentum = _direction * _momentumBullet;
+			velMain += 2 * _momentum / masMain;
+		}
+	}
 
 	private void CalCoefficientFriction()
 	{
@@ -107,7 +140,7 @@ public partial class player_main : CharacterBody2D
 		}
 	}
 
-	private void ActionUnderAttack()
+	private void ActionUnderAttack(float _damage)
 	{
 		// Trigger check
 		if (Trigger["player_hit"][0] != 0)
@@ -116,8 +149,8 @@ public partial class player_main : CharacterBody2D
 			Condition["player_hit"] = true;
 			Duration["player_hit"][0] = Duration["player_hit"][1];
 			GetNode<AudioStreamPlayer>("sound/hit").Play();
-			GetNode<Area2D>("reghit").CollisionMask -= 2;
-			HealPoint -= totalDamage;
+			CollisionLayer = 0;
+			HealPoint -= _damage;
 		}
 
 		// blink body
@@ -133,40 +166,7 @@ public partial class player_main : CharacterBody2D
 		if (Duration["player_hit"][0] == 0)
 		{
 			Condition["player_hit"] = false;
-			GetNode<Area2D>("reghit").CollisionMask += 2;
-		}
-	}
-
-	private void ColliPlayer()
-	{
-		if (Condition["player_hit"] == false)
-		{
-			totalDamage = 0;
-			foreach (var _area in GetNode<Area2D>("reghit").GetOverlappingAreas())
-			{
-				Vector2 _momentum = Vector2.Zero;
-				totalDamage = 0;
-				RigidBody2D _body = _area.GetOwner<RigidBody2D>();
-				if (_body.IsInGroup("enemy"))
-				{
-					if (_body.IsInGroup("bullet"))
-					{
-						_momentum += (Position - _body.Position).Normalized() * _body.Mass * _body.LinearVelocity.Length();
-						_body.GetNode<bullet_main>(".").HitPlayer();
-						totalDamage += 1;
-					}
-					if (_body.IsInGroup("boss"))
-					{
-						_momentum += (Position - _body.Position).Normalized() * 5000;
-						totalDamage += 5;
-					}
-				}
-				if (totalDamage > 0)
-				{
-					Trigger["player_hit"][0] = 10;
-					velMain += 2 * _momentum / masMain;
-				}
-			}
+			CollisionLayer = 2;
 		}
 	}
 
@@ -194,16 +194,12 @@ public partial class player_main : CharacterBody2D
 		{
 			float _deltaPositionX = velShield.X * deltaTime / 2;
 			((CapsuleShape2D)GetNode<CollisionShape2D>("posshield/body/colshape").Shape).Radius = 8 + _deltaPositionX;
-			((CapsuleShape2D)GetNode<CollisionShape2D>("posshield/body/areahit/colshape").Shape).Radius = 8 + _deltaPositionX;
 			GetNode<CollisionShape2D>("posshield/body/colshape").Position = new Vector2(-_deltaPositionX, 0);
-			GetNode<CollisionShape2D>("posshield/body/areahit/colshape").Position = new Vector2(-_deltaPositionX, 0);
 		}
 		else
 		{
 			((CapsuleShape2D)GetNode<CollisionShape2D>("posshield/body/colshape").Shape).Radius = 8;
-			((CapsuleShape2D)GetNode<CollisionShape2D>("posshield/body/areahit/colshape").Shape).Radius = 8;
 			GetNode<CollisionShape2D>("posshield/body/colshape").Position = new Vector2(0, 0);
-			GetNode<CollisionShape2D>("posshield/body/areahit/colshape").Position = new Vector2(0, 0);
 		}
 	}
 
@@ -244,26 +240,6 @@ public partial class player_main : CharacterBody2D
 		}
 	}
 
-	private void ColliShield()
-	{
-		foreach (var _body in GetNode<Area2D>("posshield/body/areahit").GetOverlappingBodies())
-		{
-			Vector2 _momentum = Vector2.Zero;
-			if (_body.IsInGroup("bullet"))
-			{
-				RigidBody2D _bulletBody = (RigidBody2D)_body;
-				_momentum += (Position - _bulletBody.Position).Normalized() * _bulletBody.Mass * _bulletBody.LinearVelocity.Length();
-				_bulletBody.GetNode<bullet_main>(".").ReflectShield();
-			}
-			if (_momentum.Length() >= 0.0f)
-			{
-				velMain += 2 * _momentum / masMain;
-				GetNode<AudioStreamPlayer>("sound/reflect").Play();
-				ManaPoint += 1;
-			}
-		}
-	}
-
 	public override void _Ready()
 	{
 		Cooldown.Add("shield_push", new float[] {0, 1});
@@ -273,6 +249,8 @@ public partial class player_main : CharacterBody2D
 		Condition.Add("player_hit", false);
 		Duration.Add("player_hit", new float[] {0, 3});
 		Trigger.Add("player_hit", new float[] {0, 10});
+		Cooldown.Add("rebound", new float[] {0, 0.2f});
+		Cooldown.Add("mana_get", new float[] {0, 0.1f});
 
 		CalCoefficientFriction();
 	}
@@ -286,15 +264,13 @@ public partial class player_main : CharacterBody2D
 		AdjustMovingPhysics();
 		InputDash();
 		ActionDash();
-		ColliPlayer();
-		ActionUnderAttack();
+		ActionUnderAttack(0);
 
 		// shield sectionaa
 		InputShieldPush();
 		AdjustShieldRotate();
 		AdjustShieldReturn();
 		ActionShieldPush();
-		ColliShield();
 
 		// skill section
 
