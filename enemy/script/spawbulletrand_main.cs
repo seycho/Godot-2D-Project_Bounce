@@ -29,6 +29,12 @@ public partial class spawbulletrand_main : Node2D
 		}
 	}
 
+	private void InitialProcess(double delta)
+	{
+		deltaTime = (float)delta * SpeedProcess;
+		AdjustCountdownDic(Cooldown);
+	}
+
 	private async Task SpawnBulletNode()
 	{
 		await Task.Run( ()=>
@@ -42,6 +48,15 @@ public partial class spawbulletrand_main : Node2D
 		});
 	}
 
+	private void SpawnBullet()
+	{
+		if (Cooldown["spawn"][0] == 0)
+		{
+			Cooldown["spawn"][0] = Cooldown["spawn"][1];
+			SpawnBulletNode();
+		}
+	}
+
 	public override void _Ready()
 	{
 		Cooldown.Add("spawn", new float[] {0, 1.0f});
@@ -50,14 +65,7 @@ public partial class spawbulletrand_main : Node2D
 
 	public override void _Process(double delta)
 	{
-		deltaTime = (float)delta * SpeedProcess;
-		AdjustCountdownDic(Cooldown);
-		
-		if (Cooldown["spawn"][0] == 0)
-		{
-			Cooldown["spawn"][0] = Cooldown["spawn"][1];
-			
-			SpawnBulletNode();
-		}
+		InitialProcess(delta);
+		SpawnBullet();
 	}
 }

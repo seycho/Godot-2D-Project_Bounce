@@ -161,6 +161,7 @@ public partial class left_scroll_random_main : Node2D
 			SetProcessSpeed(1);
 		if (IsPause > 0)
 			SetProcessSpeed(0.0f);
+			
 		deltaTime = (float)delta * SpeedProcess;
 		AdjustCountdownDic(Cooldown);
 		MoveLeftArea();

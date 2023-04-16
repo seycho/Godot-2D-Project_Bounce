@@ -4,10 +4,13 @@ using System;
 public partial class bullet_main : RigidBody2D
 {
 	public float SpeedProcess = 1.0f;
+	public Vector2 Velocity = new Vector2(0, 0);
 
 	private bool isActive = true;
 	private float velDefault = 1000;
 	private string stateRemove = "None";
+	
+	private float deltaTime;
 
 	public void ReflectShield()
 	{
@@ -30,8 +33,6 @@ public partial class bullet_main : RigidBody2D
 		LinearVelocity = Vector2.Zero;
 		CollisionLayer = 0;
 		CollisionMask = 0;
-		GetNode<Area2D>("regdet").CollisionLayer = 0;
-		GetNode<Area2D>("regdet").CollisionMask = 0;
 		if (stateRemove == "crash")
 		{
 			if (GetNode<AudioStreamPlayer>("sound/crash").Playing == false)
@@ -42,24 +43,21 @@ public partial class bullet_main : RigidBody2D
 			QueueFree();
 		}
 	}
-	
+
+	private void InitialProcess(double delta)
+	{
+		deltaTime = (float)delta * SpeedProcess;
+		LinearVelocity = Velocity.Normalized() * velDefault * SpeedProcess;
+	}
+
 	private void CollBodyCheck()
 	{
-		bool isCollision = false;
-		foreach (var _body in GetNode<Area2D>("regdet").GetOverlappingBodies())
-		{
-			if (_body.Name != Name)
-			{
-				isCollision = true;
-			}
-		}
-		if (isCollision)
+		KinematicCollision2D _collision = MoveAndCollide(Velocity * deltaTime);
+		if (_collision != null)
 		{
 			GetNode<AudioStreamPlayer>("sound/hit").Play();
-			
+			Velocity = Velocity.Bounce(_collision.GetNormal());
 		}
-		else
-			LinearVelocity = LinearVelocity / LinearVelocity.Length() * velDefault * SpeedProcess;
 	}
 
 	private void CollAtkCheck()
@@ -96,16 +94,15 @@ public partial class bullet_main : RigidBody2D
 			{
 				_body.GetOwner<CharacterBody2D>().GetNode<player_main>(".").ColliShield(Position, Mass * LinearVelocity.Length());
 				ReflectShield();
-				GD.Print(111);
 			}
 			else if (_body.IsInGroup("boss"))
 			{
 				if (IsInGroup("player") & _body.IsInGroup("enemy"))
 				{
 					isActive = false;
-					_body.GetNode<bossnor1_main>(".").ColliBody();
 					stateRemove = "attack";
 					GetNode<Timer>("remove").Start();
+					_body.GetNode<bossnor1_main>(".").ColliBody();
 				}
 			}
 		}
@@ -113,10 +110,13 @@ public partial class bullet_main : RigidBody2D
 
 	public override void _Ready()
 	{
+		Velocity = LinearVelocity;
 	}
 
 	public override void _Process(double delta)
 	{
+		InitialProcess(delta);
+
 		if (isActive)
 		{
 			CollBodyCheck();
@@ -125,13 +125,6 @@ public partial class bullet_main : RigidBody2D
 		else
 		{
 			ActionRemove();
-		}
-		KinematicCollision2D _collision = MoveAndCollide(LinearVelocity * (float)delta);
-		if (_collision != null)
-		{
-			var reflect = _collision.GetRemainder().Bounce(_collision.GetNormal());
-			LinearVelocity = LinearVelocity.Bounce(_collision.GetNormal());
-			MoveAndCollide(reflect);
 		}
 	}
 }

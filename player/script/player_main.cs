@@ -153,7 +153,7 @@ public partial class player_main : CharacterBody2D
 			HealPoint -= _damage;
 		}
 
-		// blink body
+		// Blink body
 		if (Condition["player_hit"] == true)
 		{
 			if (Duration["player_hit"][0] % 0.6 > 0.3)
@@ -162,7 +162,7 @@ public partial class player_main : CharacterBody2D
 				GetNode<Sprite2D>("posbody/Ball").Modulate = new Color(1, 1, 1, 1);
 		}
 
-		// over
+		// Over
 		if (Duration["player_hit"][0] == 0)
 		{
 			Condition["player_hit"] = false;
@@ -180,6 +180,7 @@ public partial class player_main : CharacterBody2D
 
 	private void ActionShieldPush()
 	{
+		// Trigger
 		if (Trigger["shield_push"][0] > 0)
 		{
 			if (Cooldown["shield_push"][0] == 0)
@@ -190,6 +191,7 @@ public partial class player_main : CharacterBody2D
 			}
 		}
 
+		// Adjust and expand collision
 		if (velShield.X > 0)
 		{
 			float _deltaPositionX = velShield.X * deltaTime / 2;
@@ -202,23 +204,6 @@ public partial class player_main : CharacterBody2D
 			GetNode<CollisionShape2D>("posshield/body/colshape").Position = new Vector2(0, 0);
 		}
 	}
-
-	private void AdjustShieldRotate()
-	{
-		float _angleNode = GetNode<Marker2D>("posshield").Rotation;
-		Vector2 _dirNode = new Vector2((float)Math.Cos(_angleNode), (float)Math.Sin(_angleNode));
-		Vector2 _dirMouse = (GetGlobalMousePosition() - Position).Normalized();
-		float _outerProduction = _dirNode.X * _dirMouse.Y - _dirNode.Y * _dirMouse.X;
-		float _dirAngular = _outerProduction / Math.Abs(_outerProduction);
-		float _thetaDelta = (float)Math.Acos(_dirNode.Dot(_dirMouse));
-
-		float _angularvel = _dirAngular * _thetaDelta / (float)Math.PI * angularvel0Shield;
-		if (float.IsNaN(_angularvel))
-			_angularvel = 0;
-		GetNode<Marker2D>("posshield").Rotation = _angleNode + _angularvel * deltaTime;
-		GetNode<CharacterBody2D>("posshield/body").Rotation = _angularvel / 20;
-	}
-
 	private void AdjustShieldReturn()
 	{
 		Vector2 _position = GetNode<CharacterBody2D>("posshield/body").Position;
@@ -238,6 +223,24 @@ public partial class player_main : CharacterBody2D
 			_position.X = 100;
 			GetNode<CharacterBody2D>("posshield/body").Position = _position;
 		}
+	}
+
+	private void AdjustShieldRotate()
+	{
+		// Calculate angular velocity and direction
+		float _angleNode = GetNode<Marker2D>("posshield").Rotation;
+		Vector2 _dirNode = new Vector2((float)Math.Cos(_angleNode), (float)Math.Sin(_angleNode));
+		Vector2 _dirMouse = (GetGlobalMousePosition() - Position).Normalized();
+		float _outerProduction = _dirNode.X * _dirMouse.Y - _dirNode.Y * _dirMouse.X;
+		float _dirAngular = _outerProduction / Math.Abs(_outerProduction);
+		float _thetaDelta = (float)Math.Acos(_dirNode.Dot(_dirMouse));
+
+		// Adjust
+		float _angularvel = _dirAngular * _thetaDelta / (float)Math.PI * angularvel0Shield;
+		if (float.IsNaN(_angularvel))
+			_angularvel = 0;
+		GetNode<Marker2D>("posshield").Rotation = _angleNode + _angularvel * deltaTime;
+		GetNode<CharacterBody2D>("posshield/body").Rotation = _angularvel / 20 * deltaTime;
 	}
 
 	public override void _Ready()
@@ -266,11 +269,11 @@ public partial class player_main : CharacterBody2D
 		ActionDash();
 		ActionUnderAttack(0);
 
-		// shield sectionaa
+		// shield section
 		InputShieldPush();
-		AdjustShieldRotate();
-		AdjustShieldReturn();
 		ActionShieldPush();
+		AdjustShieldReturn();
+		AdjustShieldRotate();
 
 		// skill section
 

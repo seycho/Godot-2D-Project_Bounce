@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://crfy87kr1fo4t"]
+
+[ext_resource type="PackedScene" uid="uid://cd51wtirkixto" path="res://enemy/bullet.tscn" id="1_50j0u"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rfgxo"]
+size = Vector2(893.5, 28)
+
+[node name="Node2D" type="Node2D"]
+
+[node name="bullet" parent="." instance=ExtResource("1_50j0u")]
+position = Vector2(764, 206)
+linear_velocity = Vector2(-100, 100)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(446.25, 404)
+shape = SubResource("RectangleShape2D_rfgxo")

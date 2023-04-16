@@ -69,7 +69,7 @@ public partial class bossnor1_main : RigidBody2D
 		return (float)_xNext;
 	}
 
-	private void ActionMoveRandom()
+	private void AdjustRandDestination()
 	{
 		if (Cooldown["random_aim"][0] == 0)
 		{
@@ -141,7 +141,7 @@ public partial class bossnor1_main : RigidBody2D
 	public override void _Process(double delta)
 	{
 		InitialProcess(delta);
-		ActionMoveRandom();
+		AdjustRandDestination();
 		ActionMoveDestination();
 
 		CollAtkCheck();
